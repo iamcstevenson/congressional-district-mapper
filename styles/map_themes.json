@@ -1,0 +1,34 @@
+{
+  "default": {
+    "district_style": {
+      "fillColor": "#ff6b6b",
+      "color": "#c92a2a",
+      "weight": 3,
+      "fillOpacity": 0.3,
+      "opacity": 0.8
+    },
+    "county_style": {
+      "fillColor": "#4dabf7",
+      "color": "#1971c2",
+      "weight": 2,
+      "fillOpacity": 0.1,
+      "opacity": 0.6
+    }
+  },
+  "high_contrast": {
+    "district_style": {
+      "fillColor": "#000000",
+      "color": "#ffffff",
+      "weight": 4,
+      "fillOpacity": 0.4,
+      "opacity": 1.0
+    },
+    "county_style": {
+      "fillColor": "#666666",
+      "color": "#000000",
+      "weight": 2,
+      "fillOpacity": 0.2,
+      "opacity": 0.8
+    }
+  }
+}
