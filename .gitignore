@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv/
+# Data files (too large for git)
+*.shp
+*.geojson
+raw_data/
+processed_data/
+*.zip
+# IDE
+.vscode/
+.idea/
+# OS
+.DS_Store
+Thumbs.db
+# Logs
+*.log
+logs/
+# Secrets
+config/secrets.pygoogle_credentials.json

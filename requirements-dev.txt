@@ -1,0 +1,14 @@
+# Core geospatial stack
+geopandas>=0.14.4
+folium>=0.17.0
+pandas>=2.2.2
+shapely>=2.0.4
+fiona>=1.9.6
+# Development tools
+jupyter>=1.0.0
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
+# Additional utilities
+requests>=2.31.0
+tqdm>=4.66.0click>=8.1.7

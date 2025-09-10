@@ -1,0 +1,43 @@
+name: Generate Congressional District Map
+on:
+workflow_dispatch:
+inputs:
+state_code:
+description: 'State code (e.g., KY, TX, CA)'
+required: true
+type: string
+district_number:
+description: 'District number'
+required: true
+type: string
+google_drive_urls:
+description: 'JSON object with Google Drive public URLs'
+required: true
+type: string
+jobs:
+generate-map:
+runs-on: ubuntu-22.04
+steps:
+- uses: actions/checkout@v4
+- name: Set up Python
+uses: actions/setup-python@v4
+with:
+python-version: '3.12'
+- name: Install system dependencies
+run: |
+sudo apt-get update
+sudo apt-get install -y gdal-bin libgdal-dev
+- name: Install Python dependencies
+run: |
+pip install --upgrade pip
+pip install geopandas folium pandas shapely fiona requests
+- name: Generate map
+run: |
+python scripts/processing/generate_map.py \--state "${{ github.event.inputs.state_code }}" \
+--district "${{ github.event.inputs.district_number }}" \
+--urls '${{ github.event.inputs.google_drive_urls }}'
+- name: Deploy to GitHub Pages
+uses: peaceiris/actions-gh-pages@v3
+with:
+github_token: ${{ secrets.GITHUB_TOKEN }}
+publish_dir: ./output
