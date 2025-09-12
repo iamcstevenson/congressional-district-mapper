@@ -1,0 +1,41 @@
+<!-- CD 6 Coffee Shops Map Embed Code -->
+<!-- Copy and paste this code into your website where you want the map to appear -->
+
+<iframe 
+    src="cd6_coffee_shops_embed.html" 
+    width="100%" 
+    height="600" 
+    frameborder="0" 
+    style="border: 1px solid #ccc; border-radius: 8px;"
+    title="Kentucky District 6 Coffee Shops Map">
+    <p>Your browser does not support iframes. 
+       <a href="cd6_coffee_shops_embed.html" target="_blank">View the map in a new window</a>
+    </p>
+</iframe>
+
+<!-- Alternative responsive iframe (adjusts to container width) -->
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 60%;">
+    <iframe 
+        src="cd6_coffee_shops_embed.html" 
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1px solid #ccc; border-radius: 8px;"
+        frameborder="0"
+        title="Kentucky District 6 Coffee Shops Map">
+        <p>Your browser does not support iframes. 
+           <a href="cd6_coffee_shops_embed.html" target="_blank">View the map in a new window</a>
+        </p>
+    </iframe>
+</div>
+
+<!-- Instructions for use: -->
+<!--
+1. Upload both files to your web server:
+   - cd6_coffee_shops_embed.html
+   - cd6_map_with_coffee_shops.html (backup/full version)
+
+2. Update the src="cd6_coffee_shops_embed.html" path to match your server structure
+   Example: src="/maps/cd6_coffee_shops_embed.html"
+
+3. Adjust width and height as needed for your website layout
+
+4. The responsive version will automatically adjust to fit the container width
+-->
