@@ -22,37 +22,12 @@ OUTPUT_HTML = 'cd6_distilleries_map.html'
 OUTPUT_IFRAME_HTML = 'cd6_distilleries_iframe.html'
 
 # Icon configuration for distilleries
-ICON_SETS = {
-    'barrel': {
-        'icon': 'glass',  # FontAwesome glass icon (closest to distillery/whiskey)
-        'prefix': 'fa',
-        'markerColor': 'darkred',
-        'iconColor': 'white'
-    },
-    'building': {
-        'icon': 'building',  # Building icon for distillery facilities
-        'prefix': 'fa',
-        'markerColor': 'cadetblue',
-        'iconColor': 'white'
-    },
-    'star': {
-        'icon': 'star',  # Star for premium/featured distilleries
-        'prefix': 'fa',
-        'markerColor': 'gold',
-        'iconColor': 'darkred'
-    },
-    'bottle': {
-        'icon': 'wine-bottle',  # Wine bottle (can represent spirits)
-        'prefix': 'fa',
-        'markerColor': 'darkpurple',
-        'iconColor': 'white'
-    },
-    'classic': {
-        'icon': 'info-sign',  # Classic marker style
-        'prefix': 'glyphicon',
-        'markerColor': 'brown',
-        'iconColor': 'white'
-    }
+BOURBON_ICON = {
+    'type': 'custom_teardrop',
+    'emoji': '🥃',
+    'backgroundColor': '#8B4513',
+    'borderColor': 'white',
+    'size': [35, 42]
 }
 
 # Manual coordinates for problematic addresses (add as needed)
@@ -353,6 +328,59 @@ def geocode_distilleries(df):
     
     return locations
 
+def create_teardrop_icon(emoji, background_color, border_color, size):
+    """Create a custom teardrop/pin shaped marker with emoji"""
+    width, height = size
+
+    icon_html = f"""
+    <div style="
+        position: relative;
+        width: {width}px;
+        height: {height}px;
+        transform: translate(-50%, -100%);
+    ">
+        <div style="
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: {width-4}px;
+            height: {width-4}px;
+            background-color: {background_color};
+            border: 2px solid {border_color};
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        "></div>
+        <div style="
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid {background_color};
+            transform: translateX(-50%);
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+        "></div>
+        <div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -65%);
+            font-size: 16px;
+            z-index: 1000;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        ">{emoji}</div>
+    </div>
+    """
+
+    return folium.DivIcon(
+        html=icon_html,
+        icon_size=(width, height),
+        icon_anchor=(width//2, height)
+    )
+
 def load_geojson():
     """Load congressional district GeoJSON"""
     print("\nLoading Congressional District 6 boundaries...")
@@ -375,10 +403,9 @@ def load_geojson():
     print("  Map will be created without district boundaries")
     return None
 
-def create_map_with_distilleries(locations, icon_style='barrel'):
+def create_map_with_distilleries(locations):
     """Create the map with distillery markers"""
     print(f"\nCreating map with {len(locations)} distilleries...")
-    print(f"Using icon style: {icon_style}")
     
     # Center map on Lexington/Central KY
     map_center = [38.0406, -84.5037]
@@ -435,8 +462,8 @@ def create_map_with_distilleries(locations, icon_style='barrel'):
             }
         ).add_to(m)
     
-    # Get icon configuration
-    icon_config = ICON_SETS.get(icon_style, ICON_SETS['barrel'])
+    # Use bourbon teardrop icon configuration
+    icon_config = BOURBON_ICON
     
     # Add distillery markers
     marker_cluster = plugins.MarkerCluster(
@@ -459,17 +486,20 @@ def create_map_with_distilleries(locations, icon_style='barrel'):
             </p>
         </div>
         """
-        
+
+        # Create bourbon teardrop marker
+        marker_icon = create_teardrop_icon(
+            emoji=icon_config['emoji'],
+            background_color=icon_config['backgroundColor'],
+            border_color=icon_config['borderColor'],
+            size=icon_config['size']
+        )
+
         folium.Marker(
             location=[loc['lat'], loc['lon']],
             popup=folium.Popup(popup_html, max_width=250),
             tooltip=loc['name'],
-            icon=folium.Icon(
-                icon=icon_config['icon'],
-                prefix=icon_config['prefix'],
-                color=icon_config['markerColor'],
-                icon_color=icon_config['iconColor']
-            )
+            icon=marker_icon
         ).add_to(marker_cluster)
     
     marker_cluster.add_to(m)
@@ -543,37 +573,25 @@ def main():
     print("GENERATING DISTILLERY MAPS")
     print("=" * 60)
     
-    # Generate map with primary icon style
-    primary_style = 'bourbon'  # Default to bourbon glass emoji
-    m = create_map_with_distilleries(locations, primary_style)
+    # Generate map with bourbon teardrop icons
+    m = create_map_with_distilleries(locations)
     
     # Save in scripts directory
     output_path = os.path.join(os.path.dirname(__file__), OUTPUT_HTML)
     m.save(output_path)
-    print(f"✓ Primary map saved: {output_path}")
-    
+    print(f"✓ Map saved: {output_path}")
+
     # Create iframe wrapper
     iframe_path = os.path.join(os.path.dirname(__file__), OUTPUT_IFRAME_HTML)
     create_iframe_wrapper(OUTPUT_HTML, iframe_path)
-    
-    # Generate additional icon style variations
-    print("\nGenerating alternative icon styles...")
-    for style_name in ['bourbon_emoji', 'barrel', 'building', 'star', 'bottle', 'classic']:
-        if style_name != primary_style:
-            m_alt = create_map_with_distilleries(locations, style_name)
-            filename = f'cd6_distilleries_{style_name}.html'
-            filepath = os.path.join(os.path.dirname(__file__), filename)
-            m_alt.save(filepath)
-            print(f"✓ {style_name.capitalize().replace('_', ' ')} style map saved: {filepath}")
-    
+
     # Print summary
     print("\n" + "=" * 60)
     print("DISTILLERY MAPPING COMPLETE!")
     print("=" * 60)
     print(f"✓ {len(locations)} distilleries mapped")
-    print(f"✓ Primary map: {output_path}")
+    print(f"✓ Map: {output_path}")
     print(f"✓ Iframe wrapper: {iframe_path}")
-    print(f"✓ Alternative styles: building, star, bottle, classic")
     print("\nFiles are ready for viewing in your browser!")
     print(f"Execution completed: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
