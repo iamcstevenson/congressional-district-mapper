@@ -17,7 +17,7 @@ print(f"Execution started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print()
 
 # Configuration
-GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1g8afJBAVBJnTkNrL5tz9Pv6u4V36ZClxYmAmrnDD48k/edit?usp=sharing'
+GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1MpxmmbJXS5qBog5HE2lANgeeJEvY0oE3MWypKuEvjks/edit?usp=sharing'
 OUTPUT_HTML = 'cd6_distilleries_map.html'
 OUTPUT_IFRAME_HTML = 'cd6_distilleries_iframe.html'
 
