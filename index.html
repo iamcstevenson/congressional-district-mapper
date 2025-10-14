@@ -388,109 +388,7 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>🥃 Kentucky Bourbon Trail 🥃</h1>
-        <p class="subtitle">Preserving America's Native Spirit</p>
-        <span class="district-label">Congressional District 6</span>
-    </header>
-
-    <nav>
-        <a href="#map">Distillery Map</a>
-        <a href="#tariffs">Tariff Impact</a>
-        <a href="#facts">Industry Facts</a>
-    </nav>
-
-    <div class="container">
-        <!-- Tariff Impact Section -->
-        <section id="tariffs" class="tariff-impact fade-in">
-            <h2>⚠️ Trade War Impact on Kentucky Bourbon</h2>
-            <p class="impact-description" style="margin-bottom: 1.5rem; font-size: 1.15rem;">
-                Kentucky's bourbon industry, responsible for 95% of the world's bourbon production, faces significant challenges from international trade disputes and retaliatory tariffs in 2025.
-            </p>
-
-            <div class="impact-grid">
-                <div class="impact-card">
-                    <h3>💰 Economic Scale</h3>
-                    <div class="impact-stat">$9 Billion</div>
-                    <p class="impact-description">Signature industry value in Kentucky, employing over 23,000 workers with $2.2 billion in annual salaries and benefits.</p>
-                </div>
-
-                <div class="impact-card">
-                    <h3>📉 Export Losses</h3>
-                    <div class="impact-stat">$500 Million</div>
-                    <p class="impact-description">Lost in exports since 2018 due to retaliatory tariffs from the EU and other countries, according to the Kentucky Distillers Association.</p>
-                </div>
-
-                <div class="impact-card">
-                    <h3>🌍 EU Tariffs</h3>
-                    <div class="impact-stat">50%</div>
-                    <p class="impact-description">The European Union announced plans to impose a 50% tariff on all American whiskey in response to U.S. tariffs on overseas steel and aluminum imports.</p>
-                </div>
-
-                <div class="impact-card">
-                    <h3>🇨🇦 Canadian Boycott</h3>
-                    <div class="impact-stat">Top Importer</div>
-                    <p class="impact-description">Canada, the industry's largest importer, is pulling bourbon from shelves in protest. PM Trudeau specifically singled out Kentucky bourbon in boycott calls.</p>
-                </div>
-
-                <div class="impact-card">
-                    <h3>🏭 Small Distillery Risk</h3>
-                    <div class="impact-stat">High Impact</div>
-                    <p class="impact-description">The trade war hits small craft distilleries hardest. Several Kentucky distilleries have closed or filed for bankruptcy, with tariffs contributing to the crisis.</p>
-                </div>
-
-                <div class="impact-card">
-                    <h3>📊 Export Value</h3>
-                    <div class="impact-stat">$500M+ /yr</div>
-                    <p class="impact-description">Distillers are nervous tariffs will slash exports, which brought in over half a billion dollars annually in both 2022 and 2023.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Map Section -->
-        <section id="map" class="map-wrapper fade-in">
-            <div class="map-header">
-                <h2>Distillery Locations</h2>
-                <p>Explore the bourbon distilleries throughout Kentucky's 6th Congressional District</p>
-            </div>
-            <div id="map"></div>
-        </section>
-
-        <!-- Industry Facts -->
-        <section id="facts" class="industry-facts fade-in">
-            <h2>Kentucky Bourbon by the Numbers</h2>
-            <div class="facts-grid">
-                <div class="fact-item">
-                    <div class="icon">🥃</div>
-                    <div class="number">95%</div>
-                    <div class="label">Of world's bourbon made in Kentucky</div>
-                </div>
-
-                <div class="fact-item">
-                    <div class="icon">👷</div>
-                    <div class="number">23,000+</div>
-                    <div class="label">Jobs in Kentucky's distilling industry</div>
-                </div>
-
-                <div class="fact-item">
-                    <div class="icon">💵</div>
-                    <div class="number">$2.2B</div>
-                    <div class="label">Annual salaries and benefits</div>
-                </div>
-
-                <div class="fact-item">
-                    <div class="icon">🏭</div>
-                    <div class="number">$9B</div>
-                    <div class="label">Total industry value</div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <footer>
-        <p>&copy; 2025 Kentucky Congressional District 6 Bourbon Heritage Map</p>
-        <p style="margin-top: 0.5rem; font-style: italic;">Supporting Kentucky's signature industry through challenging times</p>
-    </footer>
+    <div id="map"></div>
 
     <!-- Leaflet JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
@@ -582,7 +480,25 @@
         // This is a placeholder - the actual data would be loaded from the Python-generated map
         // or fetched from an API/JSON file
 
-        // Load congressional district boundary FIRST (so it renders below markers)
+        // Load county boundaries FIRST (bottom layer)
+        fetch('ky_counties.geojson')
+            .then(response => response.json())
+            .then(data => {
+                var countyBoundaries = L.geoJSON(data, {
+                    style: {
+                        fillColor: 'transparent',
+                        color: '#8B7355',
+                        weight: 1,
+                        opacity: 0.5,
+                        dashArray: '3, 3'
+                    }
+                });
+                countyBoundaries.addTo(map);
+                console.log('Kentucky county boundaries loaded');
+            })
+            .catch(err => console.error('County boundaries error:', err));
+
+        // Load congressional district boundary
         fetch('ky_6th_congressional_district.geojson')
             .then(response => {
                 console.log('GeoJSON fetch response:', response.status);
