@@ -1,0 +1,158 @@
+[
+  {
+    "name": "Barrel House Distilling",
+    "address": "1200 Manchester St",
+    "lat": 38.0563662,
+    "lon": -84.5190769
+  },
+  {
+    "name": "Bespoken Spirits",
+    "address": "101 W Loudon Ave",
+    "lat": 38.0577318,
+    "lon": -84.4812021
+  },
+  {
+    "name": "Blackwood Distilling Company",
+    "address": "100 Thomas Lane",
+    "lat": 37.7015376,
+    "lon": -85.9650941
+  },
+  {
+    "name": "Blue Run Spirits",
+    "address": "201 Corporate Boulevard",
+    "lat": 38.265498,
+    "lon": -84.519601
+  },
+  {
+    "name": "Bluegrass Distillers at Elkwood Farm",
+    "address": "158 W Leestown Road",
+    "lat": 38.0863923,
+    "lon": -84.5534213
+  },
+  {
+    "name": "Brown Foreman Distillery",
+    "address": "7855 Mccracken Pike",
+    "lat": 38.1494521,
+    "lon": -84.8338865
+  },
+  {
+    "name": "Castle & Key Distillery",
+    "address": "4445 McCracken Pike",
+    "lat": 38.1494521,
+    "lon": -84.8338865
+  },
+  {
+    "name": "Chevalier Casks",
+    "address": "1445 Chrisman Mill Road",
+    "lat": 37.8558129,
+    "lon": -84.5330977
+  },
+  {
+    "name": "Dark Arts Whiskey House",
+    "address": "1170 Manchester St",
+    "lat": 38.055062,
+    "lon": -84.5152951
+  },
+  {
+    "name": "EJ Curley",
+    "address": "7440 Old Danville Rd",
+    "lat": 37.7773145,
+    "lon": -84.609587
+  },
+  {
+    "name": "Four Roses Distillery",
+    "address": "1224 Bonds Mill Road",
+    "lat": 37.9735823,
+    "lon": -84.8961348
+  },
+  {
+    "name": "Fresh Bourbon",
+    "address": "377 E Main St",
+    "lat": 38.199953,
+    "lon": -84.855673
+  },
+  {
+    "name": "Garrard County Distilling Company",
+    "address": "450 Southern Soul Way",
+    "lat": 37.6297564,
+    "lon": -84.5750576
+  },
+  {
+    "name": "Glenns Creek Distilling",
+    "address": "3501 McCracken Pike",
+    "lat": 38.146348,
+    "lon": -84.8458183
+  },
+  {
+    "name": "Goodwood Brewing and Spirits",
+    "address": "200 Lexington Green Circle",
+    "lat": 37.9954239,
+    "lon": -84.5236618
+  },
+  {
+    "name": "Hartfield & Company",
+    "address": "320 Pleasant Street",
+    "lat": 38.2118555,
+    "lon": -84.2488501
+  },
+  {
+    "name": "James E Pepper Distillery",
+    "address": "1228 Manchester St",
+    "lat": 38.0555954,
+    "lon": -84.5177609
+  },
+  {
+    "name": "Larrikin Bourbon Company",
+    "address": "1319 Versailles Road",
+    "lat": 38.1811994,
+    "lon": -84.8162094
+  },
+  {
+    "name": "Lexington Brewing & Distilling Co",
+    "address": "401 Cross St",
+    "lat": 38.0498477,
+    "lon": -84.5095529
+  },
+  {
+    "name": "Limestone Farms Heritage Distillery Company",
+    "address": "197 Soards Road",
+    "lat": 38.2025498,
+    "lon": -84.6601604
+  },
+  {
+    "name": "Luca Mariano Distillery",
+    "address": "128 Letton Drive",
+    "lat": 37.6357583,
+    "lon": -84.7541217
+  },
+  {
+    "name": "Regeneration Distilling Company",
+    "address": "31 E Broadway Street",
+    "lat": 37.8117983,
+    "lon": -85.4656391
+  },
+  {
+    "name": "Route 52 Distillery",
+    "address": "465 Cow Creek Road",
+    "lat": 37.6933582,
+    "lon": -83.9397222
+  },
+  {
+    "name": "Saddlestone Distillery at Equus Run Vineyards",
+    "address": "1280 Moores Mill Road",
+    "lat": 38.158974,
+    "lon": -84.6458605
+  },
+  {
+    "name": "Wild Turkey",
+    "address": "1417 Versailles Road",
+    "lat": 38.0433083,
+    "lon": -84.863897
+  },
+  {
+    "name": "Woodford Reserve",
+    "address": "7785 McCracken Pike",
+    "lat": 38.1494521,
+    "lon": -84.8338865
+  }
+]

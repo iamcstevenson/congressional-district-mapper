@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Kentucky Bourbon Distilleries - Congressional District 6 v2</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Bourbon-inspired color palette */
+        :root {
+            --bourbon-barrel: #5D4037;
+            --bourbon-oak: #6D4C41;
+            --bourbon-copper: #A0522D;
+            --bourbon-amber: #D2691E;
+            --bourbon-caramel: #8B4513;
+            --bourbon-cream: #F5DEB3;
+            --bourbon-leather: #4E342E;
+            --bourbon-gold: #B8860B;
+            --bourbon-honey: #CD853F;
+            --bourbon-shadow: rgba(93, 64, 55, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, var(--bourbon-leather) 0%, var(--bourbon-barrel) 50%, var(--bourbon-oak) 100%);
+            color: var(--bourbon-cream);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(to bottom, rgba(78, 52, 46, 0.95), rgba(93, 64, 55, 0.9));
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid var(--bourbon-gold);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '🥃';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.05;
+            left: -20px;
+            top: -40px;
+            transform: rotate(-15deg);
+        }
+
+        header::after {
+            content: '🥃';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.05;
+            right: -20px;
+            top: -40px;
+            transform: rotate(15deg);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--bourbon-gold);
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--bourbon-cream);
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .district-label {
+            display: inline-block;
+            background: var(--bourbon-copper);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: 2px solid var(--bourbon-gold);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(93, 64, 55, 0.9);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--bourbon-copper);
+        }
+
+        nav a {
+            color: var(--bourbon-cream);
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s, text-shadow 0.3s;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            color: var(--bourbon-gold);
+            text-shadow: 0 0 10px rgba(184, 134, 11, 0.6);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Tariff Impact Section */
+        .tariff-impact {
+            background: linear-gradient(135deg, rgba(93, 64, 55, 0.95), rgba(109, 76, 65, 0.95));
+            border: 3px solid var(--bourbon-copper);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tariff-impact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--bourbon-gold), var(--bourbon-honey), var(--bourbon-gold));
+        }
+
+        .tariff-impact h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--bourbon-gold);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .impact-card {
+            background: rgba(78, 52, 46, 0.7);
+            border: 2px solid var(--bourbon-copper);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.3);
+        }
+
+        .impact-card h3 {
+            color: var(--bourbon-honey);
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .impact-stat {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--bourbon-gold);
+            margin: 0.5rem 0;
+        }
+
+        .impact-description {
+            color: var(--bourbon-cream);
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        /* Map Container */
+        .map-wrapper {
+            background: rgba(78, 52, 46, 0.95);
+            border: 4px solid var(--bourbon-copper);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .map-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .map-header h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--bourbon-gold);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .map-header p {
+            color: var(--bourbon-cream);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        #map {
+            height: 700px;
+            width: 100%;
+            border-radius: 10px;
+            border: 3px solid var(--bourbon-oak);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Industry Facts Section */
+        .industry-facts {
+            background: linear-gradient(135deg, rgba(109, 76, 65, 0.95), rgba(93, 64, 55, 0.95));
+            border: 3px solid var(--bourbon-copper);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .industry-facts h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--bourbon-gold);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .fact-item {
+            background: rgba(78, 52, 46, 0.7);
+            border-left: 4px solid var(--bourbon-gold);
+            padding: 1.2rem;
+            border-radius: 8px;
+        }
+
+        .fact-item .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .fact-item .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--bourbon-honey);
+            margin-bottom: 0.3rem;
+        }
+
+        .fact-item .label {
+            color: var(--bourbon-cream);
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(78, 52, 46, 0.95);
+            padding: 2rem;
+            text-align: center;
+            border-top: 3px solid var(--bourbon-gold);
+            margin-top: 3rem;
+        }
+
+        footer p {
+            color: var(--bourbon-cream);
+            font-size: 1rem;
+        }
+
+        /* Custom Leaflet Styling */
+        .leaflet-popup-content-wrapper {
+            background: linear-gradient(135deg, rgba(245, 222, 179, 0.98), rgba(250, 235, 215, 0.98));
+            color: var(--bourbon-barrel);
+            border: 2px solid var(--bourbon-gold);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .leaflet-popup-content h4 {
+            color: var(--bourbon-copper);
+            font-family: 'Cinzel', serif;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(245, 222, 179, 0.98);
+        }
+
+        /* CRITICAL: Hide all tooltips and label overlays */
+        .leaflet-tooltip,
+        .leaflet-tooltip-pane,
+        .leaflet-label,
+        .leaflet-marker-pane .leaflet-popup-pane {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
+        /* Only show popups when they have the leaflet-popup-content-wrapper (clicked popups) */
+        .leaflet-popup-pane {
+            display: block !important;
+        }
+
+        /* Remove white background from marker icons */
+        .leaflet-marker-icon.leaflet-div-icon {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .leaflet-div-icon {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            nav a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+
+            #map {
+                height: 500px;
+            }
+
+            .impact-grid, .facts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🥃 Kentucky Bourbon Trail 🥃</h1>
+        <p class="subtitle">Preserving America's Native Spirit</p>
+        <span class="district-label">Congressional District 6</span>
+    </header>
+
+    <nav>
+        <a href="#map">Distillery Map</a>
+        <a href="#tariffs">Tariff Impact</a>
+        <a href="#facts">Industry Facts</a>
+    </nav>
+
+    <div class="container">
+        <!-- Tariff Impact Section -->
+        <section id="tariffs" class="tariff-impact fade-in">
+            <h2>⚠️ Trade War Impact on Kentucky Bourbon</h2>
+            <p class="impact-description" style="margin-bottom: 1.5rem; font-size: 1.15rem;">
+                Kentucky's bourbon industry, responsible for 95% of the world's bourbon production, faces significant challenges from international trade disputes and retaliatory tariffs in 2025.
+            </p>
+
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <h3>💰 Economic Scale</h3>
+                    <div class="impact-stat">$9 Billion</div>
+                    <p class="impact-description">Signature industry value in Kentucky, employing over 23,000 workers with $2.2 billion in annual salaries and benefits.</p>
+                </div>
+
+                <div class="impact-card">
+                    <h3>📉 Export Losses</h3>
+                    <div class="impact-stat">$500 Million</div>
+                    <p class="impact-description">Lost in exports since 2018 due to retaliatory tariffs from the EU and other countries, according to the Kentucky Distillers Association.</p>
+                </div>
+
+                <div class="impact-card">
+                    <h3>🌍 EU Tariffs</h3>
+                    <div class="impact-stat">50%</div>
+                    <p class="impact-description">The European Union announced plans to impose a 50% tariff on all American whiskey in response to U.S. tariffs on overseas steel and aluminum imports.</p>
+                </div>
+
+                <div class="impact-card">
+                    <h3>🇨🇦 Canadian Boycott</h3>
+                    <div class="impact-stat">Top Importer</div>
+                    <p class="impact-description">Canada, the industry's largest importer, is pulling bourbon from shelves in protest. PM Trudeau specifically singled out Kentucky bourbon in boycott calls.</p>
+                </div>
+
+                <div class="impact-card">
+                    <h3>🏭 Small Distillery Risk</h3>
+                    <div class="impact-stat">High Impact</div>
+                    <p class="impact-description">The trade war hits small craft distilleries hardest. Several Kentucky distilleries have closed or filed for bankruptcy, with tariffs contributing to the crisis.</p>
+                </div>
+
+                <div class="impact-card">
+                    <h3>📊 Export Value</h3>
+                    <div class="impact-stat">$500M+ /yr</div>
+                    <p class="impact-description">Distillers are nervous tariffs will slash exports, which brought in over half a billion dollars annually in both 2022 and 2023.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map Section -->
+        <section id="map" class="map-wrapper fade-in">
+            <div class="map-header">
+                <h2>Distillery Locations</h2>
+                <p>Explore the bourbon distilleries throughout Kentucky's 6th Congressional District</p>
+            </div>
+            <div id="map"></div>
+        </section>
+
+        <!-- Industry Facts -->
+        <section id="facts" class="industry-facts fade-in">
+            <h2>Kentucky Bourbon by the Numbers</h2>
+            <div class="facts-grid">
+                <div class="fact-item">
+                    <div class="icon">🥃</div>
+                    <div class="number">95%</div>
+                    <div class="label">Of world's bourbon made in Kentucky</div>
+                </div>
+
+                <div class="fact-item">
+                    <div class="icon">👷</div>
+                    <div class="number">23,000+</div>
+                    <div class="label">Jobs in Kentucky's distilling industry</div>
+                </div>
+
+                <div class="fact-item">
+                    <div class="icon">💵</div>
+                    <div class="number">$2.2B</div>
+                    <div class="label">Annual salaries and benefits</div>
+                </div>
+
+                <div class="fact-item">
+                    <div class="icon">🏭</div>
+                    <div class="number">$9B</div>
+                    <div class="label">Total industry value</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Kentucky Congressional District 6 Bourbon Heritage Map</p>
+        <p style="margin-top: 0.5rem; font-style: italic;">Supporting Kentucky's signature industry through challenging times</p>
+    </footer>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+
+    <script>
+        // Initialize map centered on Lexington/Central KY
+        var map = L.map('map', {
+            center: [38.0406, -84.5037],
+            zoom: 9,
+            zoomControl: true
+        });
+
+        // Add tile layer with sepia/warm tone filter
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Add CSS filter for warm/earthy tones
+        var style = document.createElement('style');
+        style.textContent = `
+            .leaflet-tile-container {
+                filter: sepia(20%) hue-rotate(-10deg) saturate(1.2);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add scale control
+        L.control.scale().addTo(map);
+
+        // Add fullscreen control
+        L.control.fullscreen().addTo(map);
+
+        // Function to create custom bourbon teardrop marker
+        function createBourbonMarker(emoji, backgroundColor, borderColor) {
+            var iconHtml = `
+                <div style="
+                    position: relative;
+                    width: 35px;
+                    height: 42px;
+                    transform: translate(-50%, -100%);
+                ">
+                    <div style="
+                        position: absolute;
+                        top: 0;
+                        left: 50%;
+                        width: 31px;
+                        height: 31px;
+                        background-color: ${backgroundColor};
+                        border: 2px solid ${borderColor};
+                        border-radius: 50%;
+                        transform: translateX(-50%);
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                    "></div>
+                    <div style="
+                        position: absolute;
+                        bottom: 0;
+                        left: 50%;
+                        width: 0;
+                        height: 0;
+                        border-left: 8px solid transparent;
+                        border-right: 8px solid transparent;
+                        border-top: 12px solid ${backgroundColor};
+                        transform: translateX(-50%);
+                        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+                    "></div>
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -65%);
+                        font-size: 16px;
+                        z-index: 1000;
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+                    ">${emoji}</div>
+                </div>
+            `;
+
+            return L.divIcon({
+                html: iconHtml,
+                iconSize: [35, 42],
+                iconAnchor: [17, 42],
+                popupAnchor: [0, -42]
+            });
+        }
+
+        // Load distillery data from the generated script
+        // This is a placeholder - the actual data would be loaded from the Python-generated map
+        // or fetched from an API/JSON file
+
+        // Load congressional district boundary FIRST (so it renders below markers)
+        fetch('ky_6th_congressional_district.geojson')
+            .then(response => {
+                console.log('GeoJSON fetch response:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('GeoJSON data loaded:', data);
+
+                // Create district boundary layer
+                var districtBoundary = L.geoJSON(data, {
+                    style: {
+                        fillColor: 'rgba(139, 69, 19, 0.05)',
+                        color: '#5D4037',
+                        weight: 4,
+                        opacity: 1,
+                        dashArray: '5, 5',
+                        fillOpacity: 0.1
+                    }
+                });
+
+                // Add to map
+                districtBoundary.addTo(map);
+
+                console.log('Congressional District 6 boundary loaded and added to map');
+            })
+            .catch(err => {
+                console.error('District boundary error:', err);
+                alert('Failed to load district boundary: ' + err.message);
+            });
+
+        // Load distillery data
+        const distilleries = [
+            {"name":"Barrel House Distilling","address":"1200 Manchester St","lat":38.0563662,"lon":-84.5190769},
+            {"name":"Bespoken Spirits","address":"101 W Loudon Ave","lat":38.0577318,"lon":-84.4812021},
+            {"name":"Blackwood Distilling Company","address":"100 Thomas Lane","lat":37.7015376,"lon":-85.9650941},
+            {"name":"Blue Run Spirits","address":"201 Corporate Boulevard","lat":38.265498,"lon":-84.519601},
+            {"name":"Bluegrass Distillers at Elkwood Farm","address":"158 W Leestown Road","lat":38.0863923,"lon":-84.5534213},
+            {"name":"Brown Foreman Distillery","address":"7855 Mccracken Pike","lat":38.1494521,"lon":-84.8338865},
+            {"name":"Castle & Key Distillery","address":"4445 McCracken Pike","lat":38.1494521,"lon":-84.8338865},
+            {"name":"Chevalier Casks","address":"1445 Chrisman Mill Road","lat":37.8558129,"lon":-84.5330977},
+            {"name":"Dark Arts Whiskey House","address":"1170 Manchester St","lat":38.055062,"lon":-84.5152951},
+            {"name":"EJ Curley","address":"7440 Old Danville Rd","lat":37.7773145,"lon":-84.609587},
+            {"name":"Four Roses Distillery","address":"1224 Bonds Mill Road","lat":37.9735823,"lon":-84.8961348},
+            {"name":"Fresh Bourbon","address":"377 E Main St","lat":38.199953,"lon":-84.855673},
+            {"name":"Garrard County Distilling Company","address":"450 Southern Soul Way","lat":37.6297564,"lon":-84.5750576},
+            {"name":"Glenns Creek Distilling","address":"3501 McCracken Pike","lat":38.146348,"lon":-84.8458183},
+            {"name":"Goodwood Brewing and Spirits","address":"200 Lexington Green Circle","lat":37.9954239,"lon":-84.5236618},
+            {"name":"Hartfield & Company","address":"320 Pleasant Street","lat":38.2118555,"lon":-84.2488501},
+            {"name":"James E Pepper Distillery","address":"1228 Manchester St","lat":38.0555954,"lon":-84.5177609},
+            {"name":"Larrikin Bourbon Company","address":"1319 Versailles Road","lat":38.1811994,"lon":-84.8162094},
+            {"name":"Lexington Brewing & Distilling Co","address":"401 Cross St","lat":38.0498477,"lon":-84.5095529},
+            {"name":"Limestone Farms Heritage Distillery Company","address":"197 Soards Road","lat":38.2025498,"lon":-84.6601604},
+            {"name":"Luca Mariano Distillery","address":"128 Letton Drive","lat":37.6357583,"lon":-84.7541217},
+            {"name":"Regeneration Distilling Company","address":"31 E Broadway Street","lat":37.8117983,"lon":-85.4656391},
+            {"name":"Route 52 Distillery","address":"465 Cow Creek Road","lat":37.6933582,"lon":-83.9397222},
+            {"name":"Saddlestone Distillery at Equus Run Vineyards","address":"1280 Moores Mill Road","lat":38.158974,"lon":-84.6458605},
+            {"name":"Wild Turkey","address":"1417 Versailles Road","lat":38.0433083,"lon":-84.863897},
+            {"name":"Woodford Reserve","address":"7785 McCracken Pike","lat":38.1494521,"lon":-84.8338865}
+        ];
+
+        // Add distillery markers directly to map - NO CLUSTERING
+        distilleries.forEach(distillery => {
+            const popupHtml = `
+                <div style='font-family: Georgia, serif; width: 200px;'>
+                    <h4 style='margin: 0 0 5px 0; color: #A0522D;'>${distillery.name}</h4>
+                    <p style='margin: 0; font-size: 12px; color: #5D4037;'>
+                        📍 ${distillery.address}
+                    </p>
+                    <p style='margin: 5px 0 0 0; font-size: 11px; color: #8B4513;'>
+                        <i>Craft Distillery</i>
+                    </p>
+                </div>
+            `;
+
+            const marker = L.marker([distillery.lat, distillery.lon], {
+                icon: createBourbonMarker('🥃', '#8B4513', '#5D4037')
+            });
+
+            marker.bindPopup(popupHtml);
+            marker.addTo(map);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        console.log(`Map initialized with ${distilleries.length} distilleries!`);
+    </script>
+</body>
+</html>
