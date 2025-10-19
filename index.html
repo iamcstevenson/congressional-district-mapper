@@ -480,26 +480,26 @@
         // This is a placeholder - the actual data would be loaded from the Python-generated map
         // or fetched from an API/JSON file
 
-        // Load county boundaries FIRST (bottom layer)
-        fetch('ky_counties.geojson')
+        // Load county boundaries FIRST (bottom layer) - only counties inside District 6
+        fetch('ky_district6_counties_accurate.geojson')
             .then(response => response.json())
             .then(data => {
                 var countyBoundaries = L.geoJSON(data, {
                     style: {
                         fillColor: 'transparent',
-                        color: '#8B7355',
-                        weight: 1,
-                        opacity: 0.5,
-                        dashArray: '3, 3'
+                        color: '#D2691E',
+                        weight: 2,
+                        opacity: 0.8,
+                        dashArray: '5, 5'
                     }
                 });
                 countyBoundaries.addTo(map);
-                console.log('Kentucky county boundaries loaded');
+                console.log('District 6 county boundaries loaded (' + data.features.length + ' counties)');
             })
             .catch(err => console.error('County boundaries error:', err));
 
         // Load congressional district boundary
-        fetch('ky_6th_congressional_district.geojson')
+        fetch('ky_6th_congressional_district_accurate.geojson')
             .then(response => {
                 console.log('GeoJSON fetch response:', response.status);
                 if (!response.ok) {
